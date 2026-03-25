@@ -1,0 +1,209 @@
+#!/usr/bin/env php
+<?php
+/**
+ * PisciWeb Module Generator
+ * 
+ * Comando CLI para generar módulos automáticamente
+ * Similar a Laravel Artisan
+ * 
+ * Uso: php console make:module NombreModulo
+ */
+
+// Colores para consola
+class ConsoleColor {
+    const GREEN = "\033[32m";
+    const YELLOW = "\033[33m";
+    const RED = "\033[31m";
+    const BLUE = "\033[34m";
+    const RESET = "\033[0m";
+}
+
+class ModuleGenerator
+{
+    private $moduleName;
+    private $modulePath;
+    private $templatePath;
+
+    public function __construct($moduleName)
+    {
+        $this->moduleName = ucfirst($moduleName);
+        $this->modulePath = __DIR__ . '/app/modules/' . $this->moduleName;
+        $this->templatePath = __DIR__ . '/app/modules/template';
+    }
+
+    /**
+     * Generar el módulo completo
+     */
+    public function generate()
+    {
+        echo ConsoleColor::BLUE . "\n╔════════════════════════════════════════╗\n" . ConsoleColor::RESET;
+        echo ConsoleColor::BLUE . "║   PisciWeb - Module Generator      ║\n" . ConsoleColor::RESET;
+        echo ConsoleColor::BLUE . "╚════════════════════════════════════════╝\n\n" . ConsoleColor::RESET;
+
+        // Verificar si el módulo ya existe
+        if (is_dir($this->modulePath)) {
+            echo ConsoleColor::RED . "✗ Error: El módulo '{$this->moduleName}' ya existe!\n" . ConsoleColor::RESET;
+            return false;
+        }
+
+        // Verificar que existe el template
+        if (!is_dir($this->templatePath)) {
+            echo ConsoleColor::RED . "✗ Error: No se encontró el template en app/modules/template\n" . ConsoleColor::RESET;
+            return false;
+        }
+
+        echo ConsoleColor::YELLOW . "→ Generando módulo: {$this->moduleName}\n\n" . ConsoleColor::RESET;
+
+        try {
+            // Crear estructura de directorios
+            $this->createDirectoryStructure();
+
+            // Copiar y procesar archivos
+            $this->copyAndProcessFiles();
+
+            echo ConsoleColor::GREEN . "\n✓ Módulo '{$this->moduleName}' generado exitosamente!\n\n" . ConsoleColor::RESET;
+            
+            $this->showSummary();
+
+            return true;
+
+        } catch (Exception $e) {
+            echo ConsoleColor::RED . "\n✗ Error al generar módulo: " . $e->getMessage() . "\n" . ConsoleColor::RESET;
+            return false;
+        }
+    }
+
+    /**
+     * Crear estructura de directorios
+     */
+    private function createDirectoryStructure()
+    {
+        $directories = [
+            '',
+            '/Controller',
+            '/Model',
+            '/assets',
+            '/assets/css',
+            '/assets/js',
+            '/css',
+            '/js'
+        ];
+
+        foreach ($directories as $dir) {
+            $path = $this->modulePath . $dir;
+            if (!is_dir($path)) {
+                mkdir($path, 0755, true);
+                echo ConsoleColor::GREEN . "  ✓ Creado: " . ConsoleColor::RESET . "app/modules/{$this->moduleName}$dir\n";
+            }
+        }
+    }
+
+    /**
+     * Copiar y procesar archivos del template
+     */
+    private function copyAndProcessFiles()
+    {
+        $files = [
+            '/Controller/controller.php' => '/Controller/controller.php',
+            '/Model/model.php' => '/Model/model.php',
+            '/index.php' => '/index.php',
+            '/assets/css/style.css' => '/assets/css/style.css',
+            '/assets/js/script.js' => '/assets/js/script.js',
+            '/js/script.js' => '/js/script.js',
+            '/css/style.css' => '/css/style.css'
+        ];
+
+        echo "\n";
+
+        foreach ($files as $source => $destination) {
+            $sourcePath = $this->templatePath . $source;
+            $destPath = $this->modulePath . $destination;
+
+            if (file_exists($sourcePath)) {
+                $content = file_get_contents($sourcePath);
+                
+                // Reemplazar placeholders
+                $content = $this->replacePlaceholders($content);
+                
+                file_put_contents($destPath, $content);
+                echo ConsoleColor::GREEN . "  ✓ Generado: " . ConsoleColor::RESET . basename($destPath) . "\n";
+            }
+        }
+    }
+
+    /**
+     * Reemplazar placeholders en el contenido
+     */
+    private function replacePlaceholders($content)
+    {
+        $replacements = [
+            'Template' => $this->moduleName,
+            'template' => strtolower($this->moduleName),
+            'TEMPLATE' => strtoupper($this->moduleName)
+        ];
+
+        foreach ($replacements as $search => $replace) {
+            $content = str_replace($search, $replace, $content);
+        }
+
+        return $content;
+    }
+
+    /**
+     * Mostrar resumen de archivos generados
+     */
+    private function showSummary()
+    {
+        echo ConsoleColor::BLUE . "╔════════════════════════════════════════╗\n" . ConsoleColor::RESET;
+        echo ConsoleColor::BLUE . "║         Archivos Generados             ║\n" . ConsoleColor::RESET;
+        echo ConsoleColor::BLUE . "╚════════════════════════════════════════╝\n\n" . ConsoleColor::RESET;
+
+        echo "  📁 app/modules/{$this->moduleName}/\n";
+        echo "     ├── 📂 Controller/\n";
+        echo "     │   └── controller.php\n";
+        echo "     ├── 📂 Model/\n";
+        echo "     │   └── model.php\n";
+        echo "     ├── 📂 assets/\n";
+        echo "     |── 📂 css/\n";
+        echo "     │   └── style.css\n";
+        echo "     |── 📂 js/\n";
+        echo "     │   └── script.js\n";
+        echo "     └── index.php\n\n";
+
+        echo ConsoleColor::YELLOW . "Próximos pasos:\n" . ConsoleColor::RESET;
+        echo "  1. Edita el controlador en: app/modules/{$this->moduleName}/Controller/controller.php\n";
+        echo "  2. Personaliza el modelo en: app/modules/{$this->moduleName}/Model/model.php\n";
+        echo "  3. Diseña la vista en: app/modules/{$this->moduleName}/index.php\n";
+        echo "  4. Agrega estilos CSS en: app/modules/{$this->moduleName}/assets/css/style.css\n";
+        echo "  5. Programa lógica JS en: app/modules/{$this->moduleName}/assets/js/script.js\n\n";
+    }
+}
+
+// =============================================
+// Ejecución del comando
+// =============================================
+
+// Verificar argumentos
+if ($argc < 3 || $argv[1] !== 'make:module') {
+    echo ConsoleColor::YELLOW . "\nUso correcto:\n" . ConsoleColor::RESET;
+    echo "  php console make:module NombreModulo\n\n";
+    echo ConsoleColor::YELLOW . "Ejemplo:\n" . ConsoleColor::RESET;
+    echo "  php console make:module Inventario\n";
+    echo "  php console make:module GestionUsuarios\n\n";
+    exit(1);
+}
+
+$moduleName = $argv[2];
+
+// Validar nombre del módulo
+if (!preg_match('/^[A-Za-z][A-Za-z0-9]*$/', $moduleName)) {
+    echo ConsoleColor::RED . "\n✗ Error: El nombre del módulo debe ser alfanumérico y comenzar con letra\n" . ConsoleColor::RESET;
+    echo ConsoleColor::YELLOW . "Ejemplos válidos: " . ConsoleColor::RESET . "Usuarios, GestionInventario, ReportesVentas\n\n";
+    exit(1);
+}
+
+// Generar el módulo
+$generator = new ModuleGenerator($moduleName);
+$success = $generator->generate();
+
+exit($success ? 0 : 1);

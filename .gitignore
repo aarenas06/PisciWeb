@@ -1,0 +1,51 @@
+# ============================================================
+# ARCHIVOS SENSIBLES - NUNCA COMMITEAR
+# ============================================================
+# Variables de entorno (contiene credenciales)
+.env
+.env.local
+.env.*.local
+
+# Composer
+/vendor/
+
+# Logs - CRÍTICO: Contienen información sensible
+/logs/
+*.log
+error_log
+
+# IDE
+.vscode/
+.idea/
+*.sublime-*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Archivos temporales
+/temp/
+*.tmp
+*.bak
+
+/API/temp/
+
+/app/modules/gestionVacantesEspontaneas/assets/cvs/
+/app/modules/gestionArrendaServPublic/assets/soportesSoliCreaServPublic/
+
+.htaccess
+
+.env
+
+*.img
+*.pdf
+*.docx
+*.doc
+*.xls
+*.xlsx
+*.png
+*.jpeg
+*.jpg
+*.pptx
+*.txt 
+*.csv
