@@ -32,10 +32,10 @@ $modulosPublicos = ['Login'];
 
 if (!$isControllerOnlyRequest && !in_array($module_temp, $modulosPublicos)) {
     // Para módulos protegidos, validar sesión
-    if (!isset($_SESSION['usuario']) || empty($_SESSION['usuario'])) {
-        header("Location: /");
-        exit;
-    }
+    // if (!isset($_SESSION['usuario']) || empty($_SESSION['usuario'])) {
+    //     header("Location: /");
+    //     exit;
+    // }
 }
 
 // Si tiene más de 2 partes: Modulo/SubProceso/Pagina

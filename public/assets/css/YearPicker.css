@@ -1,0 +1,154 @@
+/* YearPicker Styles v2.0.0 */
+
+.yearpicker-container {
+    position: absolute;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    user-select: none;
+    min-width: 280px;
+    margin-top: 5px;
+}
+
+.yearpicker-container.hide {
+    display: none;
+}
+
+.yearpicker-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #B8860B 0%, #e7c91d 100%);
+    color: #fff;
+    padding: 12px 15px;
+    border-radius: 8px 8px 0 0;
+}
+
+.yearpicker-prev,
+.yearpicker-next {
+    cursor: pointer;
+    font-size: 24px;
+    font-weight: bold;
+    padding: 5px 10px;
+    transition: all 0.3s ease;
+    border-radius: 4px;
+    user-select: none;
+}
+
+.yearpicker-prev:hover,
+.yearpicker-next:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+.yearpicker-prev.disabled,
+.yearpicker-next.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.yearpicker-current {
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+    flex: 1;
+    letter-spacing: 0.5px;
+}
+
+.yearpicker-body {
+    padding: 15px;
+    background: #fff;
+    border-radius: 0 0 8px 8px;
+}
+
+.yearpicker-year {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.yearpicker-items {
+    padding: 12px 8px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    font-weight: 500;
+    background: #f8f9fa;
+    color: #495057;
+    border: 2px solid transparent;
+}
+
+.yearpicker-items:hover {
+    background: linear-gradient(135deg, #B8860B 0%, #e7c91d 100%);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+}
+
+.yearpicker-items.selected {
+    background: linear-gradient(135deg, #B8860B 0%, #e7c91d 100%);
+    color: #fff;
+    border-color: #B8860B;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+}
+
+.yearpicker-items.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+    background: #e9ecef;
+}
+
+.yearpicker-items.highlighted {
+    border-color: #B8860B;
+    font-weight: 600;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .yearpicker-container {
+        min-width: 260px;
+    }
+
+    .yearpicker-year {
+        gap: 8px;
+    }
+
+    .yearpicker-items {
+        padding: 10px 6px;
+        font-size: 13px;
+    }
+}
+
+/* Animation para cuando aparece el picker */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.yearpicker-container:not(.hide) {
+    animation: fadeIn 0.2s ease-out;
+}
+
+/* Estilos para el input cuando está activo */
+input.yearpicker-active {
+    border-color: #B8860B;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}

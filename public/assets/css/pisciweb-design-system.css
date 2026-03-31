@@ -1,0 +1,877 @@
+/* ================================================================
+   PISCIWEB DESIGN SYSTEM v1.0
+   Sistema de diseño unificado — Login + Dashboard + Header + Footer
+   ================================================================ */
+
+/* ── DESIGN TOKENS ───────────────────────────────── */
+:root {
+    /* ═══ PALETA PRIMARIA (Ocean) ═══ */
+    --pw-ocean-deep:     #0a2a4a;
+    --pw-ocean-mid:      #0d4f8c;
+    --pw-ocean-bright:   #1a7fc4;
+    --pw-cyan-vivid:     #00c2e0;
+    --pw-cyan-light:     #5ee0f5;
+    --pw-teal-soft:      #3ac6c6;
+
+    /* ═══ PALETA SECUNDARIA ═══ */
+    --pw-indigo:         #4f46e5;
+    --pw-purple-soft:    #7c3aed;
+
+    /* ═══ SEMÁNTICOS ═══ */
+    --pw-success:        #10b981;
+    --pw-success-light:  #d1fae5;
+    --pw-warning:        #f59e0b;
+    --pw-warning-light:  #fef3c7;
+    --pw-error:          #ef4444;
+    --pw-error-light:    #fee2e2;
+    --pw-info:           #06b6d4;
+    --pw-info-light:     #cffafe;
+
+    /* ═══ NEUTROS ═══ */
+    --pw-gray-50:        #f8fafc;
+    --pw-gray-100:       #f1f5f9;
+    --pw-gray-200:       #e2e8f0;
+    --pw-gray-300:       #cbd5e1;
+    --pw-gray-400:       #94a3b8;
+    --pw-gray-500:       #64748b;
+    --pw-gray-600:       #475569;
+    --pw-gray-700:       #334155;
+    --pw-gray-800:       #1e293b;
+    --pw-gray-900:       #0f172a;
+
+    /* ═══ SUPERFICIES ═══ */
+    --pw-bg-body:        #f0f4f8;
+    --pw-bg-card:        #ffffff;
+    --pw-bg-sidebar:     var(--pw-ocean-deep);
+    --pw-bg-header:      rgba(255, 255, 255, 0.85);
+    --pw-bg-footer:      #ffffff;
+
+    /* ═══ TEXTO ═══ */
+    --pw-text-primary:   var(--pw-gray-900);
+    --pw-text-secondary: var(--pw-gray-500);
+    --pw-text-muted:     var(--pw-gray-400);
+    --pw-text-inverse:   #ffffff;
+    --pw-text-link:      var(--pw-ocean-bright);
+
+    /* ═══ BORDES ═══ */
+    --pw-border-light:   var(--pw-gray-200);
+    --pw-border-medium:  var(--pw-gray-300);
+
+    /* ═══ SOMBRAS ═══ */
+    --pw-shadow-xs:      0 1px 2px rgba(10, 42, 74, 0.05);
+    --pw-shadow-sm:      0 1px 3px rgba(10, 42, 74, 0.08), 0 1px 2px rgba(10, 42, 74, 0.04);
+    --pw-shadow-md:      0 4px 6px -1px rgba(10, 42, 74, 0.08), 0 2px 4px -2px rgba(10, 42, 74, 0.05);
+    --pw-shadow-lg:      0 10px 15px -3px rgba(10, 42, 74, 0.08), 0 4px 6px -4px rgba(10, 42, 74, 0.04);
+    --pw-shadow-xl:      0 20px 25px -5px rgba(10, 42, 74, 0.1), 0 8px 10px -6px rgba(10, 42, 74, 0.06);
+    --pw-shadow-card:    0 1px 3px rgba(10, 42, 74, 0.06), 0 1px 2px rgba(10, 42, 74, 0.04);
+    --pw-shadow-header:  0 1px 3px rgba(10, 42, 74, 0.06);
+    --pw-shadow-focus:   0 0 0 3px rgba(0, 194, 224, 0.2);
+
+    /* ═══ RADIOS ═══ */
+    --pw-radius-xs:      4px;
+    --pw-radius-sm:      6px;
+    --pw-radius-md:      8px;
+    --pw-radius-lg:      12px;
+    --pw-radius-xl:      16px;
+    --pw-radius-2xl:     24px;
+    --pw-radius-full:    9999px;
+
+    /* ═══ ESPACIADO (8px grid) ═══ */
+    --pw-space-1:        4px;
+    --pw-space-2:        8px;
+    --pw-space-3:        12px;
+    --pw-space-4:        16px;
+    --pw-space-5:        20px;
+    --pw-space-6:        24px;
+    --pw-space-8:        32px;
+    --pw-space-10:       40px;
+    --pw-space-12:       48px;
+    --pw-space-16:       64px;
+
+    /* ═══ TIPOGRAFÍA ═══ */
+    --pw-font-display:   'Outfit', 'Public Sans', system-ui, sans-serif;
+    --pw-font-body:      'DM Sans', 'Public Sans', system-ui, sans-serif;
+    --pw-font-mono:      'JetBrains Mono', 'Fira Code', monospace;
+
+    --pw-text-xs:        0.75rem;    /* 12px */
+    --pw-text-sm:        0.8125rem;  /* 13px */
+    --pw-text-base:      0.875rem;   /* 14px */
+    --pw-text-md:        1rem;       /* 16px */
+    --pw-text-lg:        1.125rem;   /* 18px */
+    --pw-text-xl:        1.25rem;    /* 20px */
+    --pw-text-2xl:       1.5rem;     /* 24px */
+    --pw-text-3xl:       1.875rem;   /* 30px */
+
+    /* ═══ TRANSICIONES ═══ */
+    --pw-transition-fast:   0.15s ease;
+    --pw-transition-base:   0.2s ease;
+    --pw-transition-slow:   0.3s ease;
+    --pw-transition-spring: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* ═══ LAYOUT ═══ */
+    --pw-sidebar-width:           260px;
+    --pw-sidebar-collapsed-width: 70px;
+    --pw-header-height:           64px;
+    --pw-footer-height:           48px;
+
+    /* ═══ GRADIENTES ═══ */
+    --pw-gradient-brand:  linear-gradient(135deg, var(--pw-ocean-bright) 0%, var(--pw-cyan-vivid) 60%, var(--pw-teal-soft) 100%);
+    --pw-gradient-sidebar: linear-gradient(180deg, #071e33 0%, var(--pw-ocean-deep) 50%, #0d3a5c 100%);
+    --pw-gradient-accent: linear-gradient(135deg, var(--pw-cyan-vivid), var(--pw-teal-soft));
+}
+
+
+/* ================================================================
+   SIDEBAR — Estilo ocean unificado con login
+   ================================================================ */
+.pc-sidebar {
+    background: var(--pw-gradient-sidebar) !important;
+    border-right: 1px solid rgba(0, 194, 224, 0.08) !important;
+    box-shadow: 2px 0 24px rgba(10, 42, 74, 0.15) !important;
+}
+
+.pc-sidebar .navbar-wrapper {
+    background: transparent !important;
+}
+
+.pc-sidebar .m-header {
+    padding: var(--pw-space-5) var(--pw-space-6);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.pc-sidebar .m-header .b-brand {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.pc-sidebar .navbar-content {
+    background: transparent !important;
+}
+
+/* Sidebar navigation items */
+.pc-sidebar .pc-navbar .pc-item > .pc-link {
+    color: rgba(255, 255, 255, 0.65) !important;
+    font-family: var(--pw-font-body);
+    font-size: var(--pw-text-base);
+    font-weight: 400;
+    border-radius: var(--pw-radius-md);
+    margin: 2px var(--pw-space-3);
+    padding: var(--pw-space-3) var(--pw-space-4);
+    transition: all var(--pw-transition-base);
+}
+
+.pc-sidebar .pc-navbar .pc-item > .pc-link:hover {
+    color: #ffffff !important;
+    background: rgba(0, 194, 224, 0.08) !important;
+}
+
+.pc-sidebar .pc-navbar .pc-item.active > .pc-link,
+.pc-sidebar .pc-navbar .pc-item > .pc-link.active {
+    color: #ffffff !important;
+    background: rgba(0, 194, 224, 0.12) !important;
+    border-left: 3px solid var(--pw-cyan-vivid);
+}
+
+.pc-sidebar .pc-navbar .pc-item > .pc-link .pc-micon i {
+    color: rgba(255, 255, 255, 0.45);
+    transition: color var(--pw-transition-base);
+}
+
+.pc-sidebar .pc-navbar .pc-item > .pc-link:hover .pc-micon i,
+.pc-sidebar .pc-navbar .pc-item.active > .pc-link .pc-micon i {
+    color: var(--pw-cyan-vivid);
+}
+
+/* Section captions */
+.pc-sidebar .pc-navbar .pc-item.pc-caption {
+    padding: var(--pw-space-4) var(--pw-space-6) var(--pw-space-2);
+}
+
+.pc-sidebar .pc-navbar .pc-item.pc-caption label {
+    color: rgba(0, 194, 224, 0.5) !important;
+    font-family: var(--pw-font-display);
+    font-size: var(--pw-text-xs);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+/* Submenu */
+.pc-sidebar .pc-submenu {
+    background: rgba(0, 0, 0, 0.12) !important;
+    border-radius: var(--pw-radius-md);
+    margin: 0 var(--pw-space-3);
+}
+
+.pc-sidebar .pc-submenu .pc-item .pc-link {
+    color: rgba(255, 255, 255, 0.5) !important;
+    font-size: var(--pw-text-sm);
+}
+
+.pc-sidebar .pc-submenu .pc-item .pc-link:hover {
+    color: var(--pw-cyan-vivid) !important;
+}
+
+
+/* ================================================================
+   HEADER — Moderno, limpio, glassmorphism sutil
+   ================================================================ */
+.pc-header {
+    background: var(--pw-bg-header) !important;
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border-bottom: 1px solid var(--pw-border-light) !important;
+    box-shadow: var(--pw-shadow-header) !important;
+    height: var(--pw-header-height);
+    z-index: 1025;
+}
+
+.pc-header .header-wrapper {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 var(--pw-space-6);
+}
+
+/* Header icon buttons */
+.pc-header .pc-head-link {
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--pw-radius-md);
+    color: var(--pw-gray-500);
+    transition: all var(--pw-transition-base);
+    position: relative;
+}
+
+.pc-header .pc-head-link:hover {
+    background: var(--pw-gray-100);
+    color: var(--pw-ocean-bright);
+}
+
+/* Notification badge */
+.pc-header .pc-head-link .badge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    min-width: 18px;
+    height: 18px;
+    font-size: 10px;
+    font-weight: 600;
+    background: var(--pw-error);
+    border: 2px solid white;
+    border-radius: var(--pw-radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+}
+
+/* User profile area */
+.pc-header .header-user-profile .pc-head-link {
+    width: auto;
+    gap: var(--pw-space-3);
+    padding: var(--pw-space-1) var(--pw-space-3) var(--pw-space-1) var(--pw-space-1);
+    border-radius: var(--pw-radius-full);
+    font-family: var(--pw-font-body);
+    font-size: var(--pw-text-sm);
+    font-weight: 500;
+    color: var(--pw-text-primary);
+}
+
+.pc-header .header-user-profile .pc-head-link:hover {
+    background: var(--pw-gray-100);
+}
+
+.pc-header .header-user-profile .user-avtar {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--pw-radius-full);
+    object-fit: cover;
+    border: 2px solid var(--pw-gray-200);
+    transition: border-color var(--pw-transition-base);
+}
+
+.pc-header .header-user-profile .pc-head-link:hover .user-avtar {
+    border-color: var(--pw-cyan-vivid);
+}
+
+/* Search bar in header */
+.pw-header-search {
+    position: relative;
+    max-width: 320px;
+    flex: 1;
+    margin: 0 var(--pw-space-6);
+}
+
+.pw-header-search input {
+    width: 100%;
+    height: 40px;
+    padding: 0 var(--pw-space-4) 0 40px;
+    background: var(--pw-gray-100);
+    border: 1.5px solid transparent;
+    border-radius: var(--pw-radius-full);
+    font-family: var(--pw-font-body);
+    font-size: var(--pw-text-sm);
+    color: var(--pw-text-primary);
+    transition: all var(--pw-transition-base);
+    outline: none;
+}
+
+.pw-header-search input::placeholder {
+    color: var(--pw-gray-400);
+}
+
+.pw-header-search input:focus {
+    background: white;
+    border-color: var(--pw-cyan-vivid);
+    box-shadow: var(--pw-shadow-focus);
+}
+
+.pw-header-search .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--pw-gray-400);
+    font-size: 16px;
+    pointer-events: none;
+}
+
+.pw-header-search kbd {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--pw-gray-200);
+    color: var(--pw-gray-500);
+    padding: 2px 6px;
+    border-radius: var(--pw-radius-xs);
+    font-size: 11px;
+    font-family: var(--pw-font-mono);
+    line-height: 1.2;
+}
+
+/* Header breadcrumb / page title area */
+.pw-header-title {
+    font-family: var(--pw-font-display);
+    font-size: var(--pw-text-md);
+    font-weight: 600;
+    color: var(--pw-text-primary);
+    margin: 0;
+    white-space: nowrap;
+}
+
+.pw-header-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: var(--pw-space-2);
+    font-size: var(--pw-text-xs);
+    color: var(--pw-text-muted);
+}
+
+.pw-header-breadcrumb a {
+    color: var(--pw-text-secondary);
+    text-decoration: none;
+    transition: color var(--pw-transition-fast);
+}
+
+.pw-header-breadcrumb a:hover {
+    color: var(--pw-ocean-bright);
+}
+
+.pw-header-breadcrumb .separator {
+    color: var(--pw-gray-300);
+}
+
+
+/* ================================================================
+   FOOTER — Minimalista, informativo
+   ================================================================ */
+.pc-footer {
+    background: var(--pw-bg-footer) !important;
+    border-top: 1px solid var(--pw-border-light);
+    height: var(--pw-footer-height);
+    display: flex;
+    align-items: center;
+}
+
+.pc-footer .footer-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 var(--pw-space-6);
+    font-family: var(--pw-font-body);
+    font-size: var(--pw-text-xs);
+    color: var(--pw-text-muted);
+}
+
+.pc-footer .footer-left {
+    display: flex;
+    align-items: center;
+    gap: var(--pw-space-2);
+}
+
+.pc-footer .footer-left .pw-footer-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--pw-success);
+    display: inline-block;
+    animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+.pc-footer .footer-right {
+    display: flex;
+    align-items: center;
+    gap: var(--pw-space-4);
+}
+
+.pc-footer .footer-right a {
+    color: var(--pw-text-muted);
+    text-decoration: none;
+    transition: color var(--pw-transition-fast);
+}
+
+.pc-footer .footer-right a:hover {
+    color: var(--pw-ocean-bright);
+}
+
+.pw-footer-version {
+    background: var(--pw-gray-100);
+    color: var(--pw-text-secondary);
+    padding: 2px 8px;
+    border-radius: var(--pw-radius-full);
+    font-size: 11px;
+    font-weight: 500;
+    font-family: var(--pw-font-mono);
+}
+
+
+/* ================================================================
+   BODY & MAIN CONTENT — Fondo coherente con login
+   ================================================================ */
+body {
+    font-family: var(--pw-font-body) !important;
+    background: var(--pw-bg-body) !important;
+    color: var(--pw-text-primary);
+}
+
+.pc-container {
+    background: var(--pw-bg-body);
+}
+
+.pc-content {
+    padding: var(--pw-space-6);
+}
+
+
+/* ================================================================
+   CARDS — Estilo unificado
+   ================================================================ */
+.pw-card,
+.pc-content .card {
+    background: var(--pw-bg-card);
+    border: 1px solid var(--pw-border-light);
+    border-radius: var(--pw-radius-lg);
+    box-shadow: var(--pw-shadow-card);
+    transition: box-shadow var(--pw-transition-base);
+}
+
+.pc-content .card:hover {
+    box-shadow: var(--pw-shadow-md);
+}
+
+.pc-content .card .card-header {
+    background: transparent;
+    border-bottom: 1px solid var(--pw-border-light);
+    padding: var(--pw-space-5) var(--pw-space-6);
+    font-family: var(--pw-font-display);
+    font-weight: 600;
+    font-size: var(--pw-text-base);
+}
+
+.pc-content .card .card-body {
+    padding: var(--pw-space-6);
+}
+
+
+/* ================================================================
+   BUTTONS — Sistema unificado
+   ================================================================ */
+.pw-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--pw-space-2);
+    padding: var(--pw-space-2) var(--pw-space-5);
+    border: 1.5px solid transparent;
+    border-radius: var(--pw-radius-md);
+    font-family: var(--pw-font-body);
+    font-size: var(--pw-text-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--pw-transition-base);
+    text-decoration: none;
+    line-height: 1.5;
+    white-space: nowrap;
+}
+
+.pw-btn:focus-visible {
+    outline: none;
+    box-shadow: var(--pw-shadow-focus);
+}
+
+/* Primary */
+.pw-btn-primary {
+    background: var(--pw-gradient-brand);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 2px 8px rgba(0, 194, 224, 0.25);
+}
+
+.pw-btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(0, 194, 224, 0.35);
+}
+
+/* Secondary */
+.pw-btn-secondary {
+    background: white;
+    color: var(--pw-text-primary);
+    border-color: var(--pw-border-medium);
+}
+
+.pw-btn-secondary:hover {
+    background: var(--pw-gray-50);
+    border-color: var(--pw-gray-400);
+}
+
+/* Ghost */
+.pw-btn-ghost {
+    background: transparent;
+    color: var(--pw-text-secondary);
+    border-color: transparent;
+}
+
+.pw-btn-ghost:hover {
+    background: var(--pw-gray-100);
+    color: var(--pw-text-primary);
+}
+
+/* Danger */
+.pw-btn-danger {
+    background: var(--pw-error);
+    color: white;
+    border-color: var(--pw-error);
+}
+
+.pw-btn-danger:hover {
+    background: #dc2626;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+/* Sizes */
+.pw-btn-sm {
+    padding: var(--pw-space-1) var(--pw-space-3);
+    font-size: var(--pw-text-xs);
+    border-radius: var(--pw-radius-sm);
+}
+
+.pw-btn-lg {
+    padding: var(--pw-space-3) var(--pw-space-8);
+    font-size: var(--pw-text-md);
+    border-radius: var(--pw-radius-lg);
+}
+
+
+/* ================================================================
+   INPUTS — Sistema unificado
+   ================================================================ */
+.pw-input,
+.pc-content .form-control {
+    height: 42px;
+    padding: 0 var(--pw-space-4);
+    background: white;
+    border: 1.5px solid var(--pw-border-light);
+    border-radius: var(--pw-radius-md);
+    font-family: var(--pw-font-body);
+    font-size: var(--pw-text-sm);
+    color: var(--pw-text-primary);
+    transition: all var(--pw-transition-base);
+    outline: none;
+}
+
+.pw-input::placeholder,
+.pc-content .form-control::placeholder {
+    color: var(--pw-gray-400);
+}
+
+.pw-input:focus,
+.pc-content .form-control:focus {
+    border-color: var(--pw-cyan-vivid);
+    box-shadow: var(--pw-shadow-focus);
+}
+
+.pw-input:hover,
+.pc-content .form-control:hover {
+    border-color: var(--pw-gray-300);
+}
+
+.pw-label,
+.pc-content .form-label {
+    font-family: var(--pw-font-body);
+    font-size: var(--pw-text-xs);
+    font-weight: 600;
+    color: var(--pw-text-secondary);
+    letter-spacing: 0.02em;
+    margin-bottom: var(--pw-space-2);
+}
+
+
+/* ================================================================
+   BADGES & STATUS
+   ================================================================ */
+.pw-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 10px;
+    border-radius: var(--pw-radius-full);
+    font-size: 11px;
+    font-weight: 600;
+    font-family: var(--pw-font-body);
+}
+
+.pw-badge-success {
+    background: var(--pw-success-light);
+    color: var(--pw-success);
+}
+
+.pw-badge-warning {
+    background: var(--pw-warning-light);
+    color: #92400e;
+}
+
+.pw-badge-error {
+    background: var(--pw-error-light);
+    color: var(--pw-error);
+}
+
+.pw-badge-info {
+    background: var(--pw-info-light);
+    color: #0e7490;
+}
+
+
+/* ================================================================
+   STAT CARDS — Estilo dashboard moderno
+   ================================================================ */
+.pw-stat-card {
+    background: var(--pw-bg-card);
+    border: 1px solid var(--pw-border-light);
+    border-radius: var(--pw-radius-lg);
+    padding: var(--pw-space-6);
+    box-shadow: var(--pw-shadow-card);
+    transition: all var(--pw-transition-base);
+    position: relative;
+    overflow: hidden;
+}
+
+.pw-stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--pw-gradient-brand);
+    opacity: 0;
+    transition: opacity var(--pw-transition-base);
+}
+
+.pw-stat-card:hover {
+    box-shadow: var(--pw-shadow-lg);
+    transform: translateY(-2px);
+}
+
+.pw-stat-card:hover::before {
+    opacity: 1;
+}
+
+.pw-stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--pw-radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    margin-bottom: var(--pw-space-4);
+}
+
+.pw-stat-icon.cyan {
+    background: rgba(0, 194, 224, 0.1);
+    color: var(--pw-cyan-vivid);
+}
+
+.pw-stat-icon.ocean {
+    background: rgba(26, 127, 196, 0.1);
+    color: var(--pw-ocean-bright);
+}
+
+.pw-stat-icon.success {
+    background: var(--pw-success-light);
+    color: var(--pw-success);
+}
+
+.pw-stat-icon.warning {
+    background: var(--pw-warning-light);
+    color: var(--pw-warning);
+}
+
+.pw-stat-value {
+    font-family: var(--pw-font-display);
+    font-size: var(--pw-text-3xl);
+    font-weight: 700;
+    color: var(--pw-text-primary);
+    line-height: 1.1;
+}
+
+.pw-stat-label {
+    font-size: var(--pw-text-sm);
+    color: var(--pw-text-secondary);
+    margin-top: var(--pw-space-1);
+}
+
+.pw-stat-change {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: var(--pw-text-xs);
+    font-weight: 600;
+    margin-top: var(--pw-space-2);
+}
+
+.pw-stat-change.up { color: var(--pw-success); }
+.pw-stat-change.down { color: var(--pw-error); }
+
+
+/* ================================================================
+   TABLES — Estilo limpio
+   ================================================================ */
+.pw-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-family: var(--pw-font-body);
+    font-size: var(--pw-text-sm);
+}
+
+.pw-table thead th {
+    background: var(--pw-gray-50);
+    color: var(--pw-text-secondary);
+    font-weight: 600;
+    font-size: var(--pw-text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: var(--pw-space-3) var(--pw-space-4);
+    border-bottom: 1px solid var(--pw-border-light);
+    white-space: nowrap;
+}
+
+.pw-table tbody td {
+    padding: var(--pw-space-3) var(--pw-space-4);
+    border-bottom: 1px solid var(--pw-gray-100);
+    color: var(--pw-text-primary);
+    vertical-align: middle;
+}
+
+.pw-table tbody tr {
+    transition: background var(--pw-transition-fast);
+}
+
+.pw-table tbody tr:hover {
+    background: var(--pw-gray-50);
+}
+
+
+/* ================================================================
+   UTILITY CLASSES
+   ================================================================ */
+.pw-text-brand { color: var(--pw-cyan-vivid); }
+.pw-text-ocean { color: var(--pw-ocean-bright); }
+.pw-bg-brand-subtle { background: rgba(0, 194, 224, 0.06); }
+.pw-border-brand { border-color: var(--pw-cyan-vivid); }
+
+.pw-gradient-text {
+    background: var(--pw-gradient-brand);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+
+/* ================================================================
+   ANIMATIONS — Microinteracciones
+   ================================================================ */
+@keyframes pw-fade-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pw-slide-in-right {
+    from { opacity: 0; transform: translateX(16px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pw-scale-in {
+    from { opacity: 0; transform: scale(0.95); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+.pw-animate-in {
+    animation: pw-fade-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.pw-animate-delay-1 { animation-delay: 0.05s; }
+.pw-animate-delay-2 { animation-delay: 0.1s; }
+.pw-animate-delay-3 { animation-delay: 0.15s; }
+.pw-animate-delay-4 { animation-delay: 0.2s; }
+
+
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
+@media (max-width: 1024px) {
+    .pw-header-search {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .pc-header .header-user-profile .pc-head-link span {
+        display: none;
+    }
+
+    .pc-footer .footer-right {
+        display: none;
+    }
+
+    .pc-footer .footer-wrapper {
+        justify-content: center;
+    }
+
+    .pw-stat-card {
+        padding: var(--pw-space-4);
+    }
+}
