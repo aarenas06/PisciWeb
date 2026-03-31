@@ -2,7 +2,7 @@
 # ARCHIVOS SENSIBLES - NUNCA COMMITEAR
 # ============================================================
 # Variables de entorno (contiene credenciales)
-.env
+# .env
 .env.local
 .env.*.local
 
@@ -33,9 +33,9 @@ Thumbs.db
 /app/modules/gestionVacantesEspontaneas/assets/cvs/
 /app/modules/gestionArrendaServPublic/assets/soportesSoliCreaServPublic/
 
-.htaccess
+# .htaccess
 
-.env
+# .env
 
 *.img
 *.pdf

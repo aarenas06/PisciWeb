@@ -1,0 +1,48 @@
+# Cargar autoloader automáticamente en TODOS los archivos PHP
+php_value auto_prepend_file "C:/xampp/htdocs/PisciWeb/app/Core/bootstrap.php"
+RewriteEngine On
+
+# PERMITIR acceso a controladores (endpoints AJAX) - compatible con raiz o /PisciWeb/
+RewriteCond %{REQUEST_URI} ^/(PisciWeb/)?app/modules/.+/(controller|Controller)/controller\.php$ [NC]
+RewriteRule ^ - [L]
+
+# PERMITIR acceso a archivos estáticos de módulos y submódulos (CSS, JS, imágenes)
+RewriteCond %{REQUEST_URI} ^/(PisciWeb/)?app/modules/.+/(css|js|assets|img|tmp|controller)/ [NC]
+RewriteRule ^ - [L]
+
+# PERMITIR acceso a archivos .js y .css en módulos y submódulos
+RewriteCond %{REQUEST_URI} ^/(PisciWeb/)?app/modules/.+\.(js|css)$ [NC]
+RewriteRule ^ - [L]
+
+# PERMITIR acceso directo a la carpeta API/ y todo su contenido (antes de bloquear otras carpetas)
+RewriteCond %{REQUEST_URI} ^/(PisciWeb/)?API/ [NC]
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Redirigir rutas de API que NO son archivos físicos al router de API
+RewriteCond %{REQUEST_URI} ^/(PisciWeb/)?API/ [NC]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^API/(.*)$ API/index.php [L,QSA]
+
+# Bloquear acceso directo al resto de app/, Config/, includes/, etc.
+RewriteRule ^(app|Config|includes|vendor|temp)/ - [F,L]
+
+# PERMITIR acceso directo a archivos físicos en public/ (CSS, JS, imágenes, index.php)
+RewriteCond %{REQUEST_URI} ^/(PisciWeb/)?public/ [NC]
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]
+
+# REGLA ESPECIAL: Redirige raíz al login
+RewriteRule ^$ public/index.php [L]
+
+# Rutas públicas sin login: /public/Modulo/subproceso/archivo
+RewriteRule ^public/(.+)$ public/PublicRouter.php?p=$1 [L,QSA]
+
+# Si NO es archivo ni carpeta físicos
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Rutas protegidas con login: /Modulo/Pagina o /Modulo/SubProceso/Pagina
+RewriteRule ^(.+)$ public/Router.php?p=$1 [L,QSA]
