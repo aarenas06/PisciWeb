@@ -448,4 +448,312 @@ class ExcelService extends BaseService
             return ["vacio"];
         }
     }
+
+    // =========================================================================
+    // MÉTODOS DE IMPORTACIÓN (LECTURA DE EXCEL)
+    // =========================================================================
+
+    /**
+     * Importar datos desde un archivo Excel (.xlsx, .xls)
+     * 
+     * @param string $filePath Ruta completa al archivo Excel
+     * @param array $options Opciones de importación:
+     *   - 'headerRow' => int (fila de encabezados, default: 1)
+     *   - 'startRow' => int (fila donde empiezan los datos, default: 2)
+     *   - 'sheet' => int|string (índice o nombre de la hoja, default: 0)
+     *   - 'columns' => array (columnas específicas a leer, ej: ['A', 'B', 'D'])
+     *   - 'maxRows' => int (límite de filas a leer, default: sin límite)
+     *   - 'skipEmpty' => bool (omitir filas vacías, default: true)
+     *   - 'trimValues' => bool (limpiar espacios en valores, default: true)
+     * 
+     * @return array ['success' => bool, 'data' => array, 'headers' => array, 'error' => string|null, 'rowCount' => int]
+     * 
+     * @example Uso básico
+     * ```php
+     * $service = new ExcelService();
+     * $result = $service->importFromExcel('/path/to/file.xlsx');
+     * if ($result['success']) {
+     *     foreach ($result['data'] as $row) {
+     *         // $row es un array asociativo con las columnas del Excel
+     *     }
+     * }
+     * ```
+     * 
+     * @example Con opciones personalizadas
+     * ```php
+     * $result = $service->importFromExcel('/path/to/file.xlsx', [
+     *     'headerRow' => 3,      // Los encabezados están en fila 3
+     *     'startRow' => 4,       // Los datos empiezan en fila 4
+     *     'columns' => ['A', 'C', 'E'], // Solo leer columnas A, C y E
+     *     'maxRows' => 1000      // Máximo 1000 filas
+     * ]);
+     * ```
+     */
+    public function importFromExcel(string $filePath, array $options = []): array
+    {
+        // Valores por defecto
+        $headerRow = $options['headerRow'] ?? 1;
+        $startRow = $options['startRow'] ?? 2;
+        $sheetIndex = $options['sheet'] ?? 0;
+        $specificColumns = $options['columns'] ?? null;
+        $maxRows = $options['maxRows'] ?? null;
+        $skipEmpty = $options['skipEmpty'] ?? true;
+        $trimValues = $options['trimValues'] ?? true;
+
+        // Validar que el archivo existe
+        if (!file_exists($filePath)) {
+            return [
+                'success' => false,
+                'data' => [],
+                'headers' => [],
+                'error' => "El archivo no existe: {$filePath}",
+                'rowCount' => 0
+            ];
+        }
+
+        try {
+            // Usar PhpSpreadsheet para lectura
+            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($filePath);
+            
+            // Obtener la hoja (por índice o nombre)
+            if (is_string($sheetIndex)) {
+                $sheet = $spreadsheet->getSheetByName($sheetIndex);
+                if (!$sheet) {
+                    return [
+                        'success' => false,
+                        'data' => [],
+                        'headers' => [],
+                        'error' => "No se encontró la hoja: {$sheetIndex}",
+                        'rowCount' => 0
+                    ];
+                }
+            } else {
+                $sheet = $spreadsheet->getSheet($sheetIndex);
+            }
+
+            // Obtener rango de datos
+            $highestRow = $sheet->getHighestRow();
+            $highestColumn = $sheet->getHighestColumn();
+            
+            // Aplicar límite de filas si está configurado
+            if ($maxRows !== null) {
+                $highestRow = min($highestRow, $startRow + $maxRows - 1);
+            }
+
+            // Leer encabezados
+            $headers = [];
+            $columnLetters = [];
+            
+            if ($specificColumns) {
+                $columnLetters = $specificColumns;
+            } else {
+                // Obtener todas las columnas desde A hasta la última
+                $columnLetters = $this->getColumnRange('A', $highestColumn);
+            }
+
+            foreach ($columnLetters as $col) {
+                $cellValue = $sheet->getCell($col . $headerRow)->getValue();
+                $headers[$col] = $trimValues ? trim((string)$cellValue) : (string)$cellValue;
+            }
+
+            // Leer datos
+            $data = [];
+            $rowCount = 0;
+
+            for ($row = $startRow; $row <= $highestRow; $row++) {
+                $rowData = [];
+                $isEmptyRow = true;
+
+                foreach ($columnLetters as $col) {
+                    $cellValue = $sheet->getCell($col . $row)->getValue();
+                    
+                    // Manejar valores de fecha/hora
+                    if (\PhpOffice\PhpSpreadsheet\Shared\Date::isDateTime($sheet->getCell($col . $row))) {
+                        try {
+                            $cellValue = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($cellValue)->format('Y-m-d H:i:s');
+                        } catch (\Exception $e) {
+                            // Si falla la conversión, mantener el valor original
+                        }
+                    }
+                    
+                    $value = $trimValues ? trim((string)$cellValue) : (string)$cellValue;
+                    
+                    if ($value !== '' && $value !== null) {
+                        $isEmptyRow = false;
+                    }
+
+                    // Usar el encabezado como clave si existe, sino usar la letra de columna
+                    $key = !empty($headers[$col]) ? $headers[$col] : $col;
+                    $rowData[$key] = $value;
+                }
+
+                // Saltar filas vacías si está configurado
+                if ($skipEmpty && $isEmptyRow) {
+                    continue;
+                }
+
+                $data[] = $rowData;
+                $rowCount++;
+            }
+
+            // Liberar memoria
+            $spreadsheet->disconnectWorksheets();
+            unset($spreadsheet);
+
+            return [
+                'success' => true,
+                'data' => $data,
+                'headers' => array_values($headers),
+                'error' => null,
+                'rowCount' => $rowCount
+            ];
+
+        } catch (\PhpOffice\PhpSpreadsheet\Reader\Exception $e) {
+            return [
+                'success' => false,
+                'data' => [],
+                'headers' => [],
+                'error' => "Error al leer el archivo Excel: " . $e->getMessage(),
+                'rowCount' => 0
+            ];
+        } catch (Exception $e) {
+            return [
+                'success' => false,
+                'data' => [],
+                'headers' => [],
+                'error' => "Error inesperado: " . $e->getMessage(),
+                'rowCount' => 0
+            ];
+        }
+    }
+
+    /**
+     * Importar Excel desde archivo subido ($_FILES)
+     * 
+     * @param array $uploadedFile El array de $_FILES['nombre_campo']
+     * @param array $options Opciones de importación (ver importFromExcel)
+     * @return array Resultado de la importación
+     * 
+     * @example
+     * ```php
+     * // En tu controller
+     * if (isset($_FILES['excel_file'])) {
+     *     $service = new ExcelService();
+     *     $result = $service->importFromUpload($_FILES['excel_file']);
+     *     if ($result['success']) {
+     *         $datos = $result['data'];
+     *     }
+     * }
+     * ```
+     */
+    public function importFromUpload(array $uploadedFile, array $options = []): array
+    {
+        // Validar estructura del archivo subido
+        if (!isset($uploadedFile['tmp_name']) || !isset($uploadedFile['error'])) {
+            return [
+                'success' => false,
+                'data' => [],
+                'headers' => [],
+                'error' => 'Estructura de archivo inválida',
+                'rowCount' => 0
+            ];
+        }
+
+        // Verificar errores de subida
+        if ($uploadedFile['error'] !== UPLOAD_ERR_OK) {
+            $errorMessages = [
+                UPLOAD_ERR_INI_SIZE => 'El archivo excede el tamaño máximo permitido por PHP',
+                UPLOAD_ERR_FORM_SIZE => 'El archivo excede el tamaño máximo del formulario',
+                UPLOAD_ERR_PARTIAL => 'El archivo se subió parcialmente',
+                UPLOAD_ERR_NO_FILE => 'No se seleccionó ningún archivo',
+                UPLOAD_ERR_NO_TMP_DIR => 'Falta carpeta temporal',
+                UPLOAD_ERR_CANT_WRITE => 'Error al escribir el archivo',
+                UPLOAD_ERR_EXTENSION => 'Extensión de PHP detuvo la subida'
+            ];
+            
+            return [
+                'success' => false,
+                'data' => [],
+                'headers' => [],
+                'error' => $errorMessages[$uploadedFile['error']] ?? 'Error desconocido al subir archivo',
+                'rowCount' => 0
+            ];
+        }
+
+        // Validar extensión
+        $allowedExtensions = ['xlsx', 'xls', 'csv'];
+        $extension = strtolower(pathinfo($uploadedFile['name'], PATHINFO_EXTENSION));
+        
+        if (!in_array($extension, $allowedExtensions)) {
+            return [
+                'success' => false,
+                'data' => [],
+                'headers' => [],
+                'error' => "Extensión no permitida: {$extension}. Use: " . implode(', ', $allowedExtensions),
+                'rowCount' => 0
+            ];
+        }
+
+        return $this->importFromExcel($uploadedFile['tmp_name'], $options);
+    }
+
+    /**
+     * Obtener lista de hojas disponibles en un archivo Excel
+     * 
+     * @param string $filePath Ruta al archivo Excel
+     * @return array ['success' => bool, 'sheets' => array, 'error' => string|null]
+     */
+    public function getSheetNames(string $filePath): array
+    {
+        if (!file_exists($filePath)) {
+            return [
+                'success' => false,
+                'sheets' => [],
+                'error' => "El archivo no existe: {$filePath}"
+            ];
+        }
+
+        try {
+            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($filePath);
+            $sheetNames = $spreadsheet->getSheetNames();
+            
+            $spreadsheet->disconnectWorksheets();
+            unset($spreadsheet);
+
+            return [
+                'success' => true,
+                'sheets' => $sheetNames,
+                'error' => null
+            ];
+        } catch (Exception $e) {
+            return [
+                'success' => false,
+                'sheets' => [],
+                'error' => "Error al leer el archivo: " . $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Genera un rango de letras de columna (A, B, C, ..., AA, AB, ...)
+     * 
+     * @param string $start Columna inicial
+     * @param string $end Columna final
+     * @return array
+     */
+    private function getColumnRange(string $start, string $end): array
+    {
+        $columns = [];
+        $current = $start;
+        
+        while (true) {
+            $columns[] = $current;
+            if ($current === $end) {
+                break;
+            }
+            $current++;
+        }
+        
+        return $columns;
+    }
 }
