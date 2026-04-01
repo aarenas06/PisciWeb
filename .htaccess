@@ -2,7 +2,25 @@
 php_value auto_prepend_file "C:/xampp/htdocs/PisciWeb/app/Core/bootstrap.php"
 RewriteEngine On
 
+# ── API LIMPIA: /api/Modulo[/Sub][:Controller] → controller interno ──
+# Reescribe rutas limpias al controller.php físico correspondiente.
+# NOTA: case-sensitive (minúscula) para no colisionar con /API/ (carpeta futura).
+#
+# Controller personalizado:  /api/Migration:ControllerXML → Migration/controller/ControllerXML.php
+# Controller por defecto:    /api/Migration               → Migration/controller/controller.php
+# Con subcarpeta:            /api/GestComp/Eval            → GestComp/Eval/controller/controller.php
+# Subcarpeta + custom:       /api/GestComp/Eval:ExportCtrl → GestComp/Eval/controller/ExportCtrl.php
+
+# 1) Si la URL termina en :NombreController → usar ese controller
+RewriteCond %{REQUEST_URI} ^/(PisciWeb/)?api/(.+):([A-Za-z0-9_-]+)$
+RewriteRule ^api/(.+):([A-Za-z0-9_-]+)$ app/modules/$1/controller/$2.php [L,QSA]
+
+# 2) Sin sufijo → controller.php por defecto
+RewriteCond %{REQUEST_URI} ^/(PisciWeb/)?api/(.+)$
+RewriteRule ^api/(.+)$ app/modules/$1/controller/controller.php [L,QSA]
+
 # PERMITIR acceso a controladores (endpoints AJAX) - compatible con raiz o /PisciWeb/
+# (mantiene retrocompatibilidad con llamadas directas existentes)
 RewriteCond %{REQUEST_URI} ^/(PisciWeb/)?app/modules/.+/(controller|Controller)/controller\.php$ [NC]
 RewriteRule ^ - [L]
 

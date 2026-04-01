@@ -33,6 +33,8 @@ require_once __DIR__ . '/../app/Core/bootstrap.php';
         <div class="orb orb-1"></div>
         <div class="orb orb-2"></div>
         <div class="orb orb-3"></div>
+        <!-- Caustic light overlay -->
+        <div class="caustics" aria-hidden="true"></div>
         <!-- Wave SVG -->
         <svg class="waves" viewBox="0 0 1440 180" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
             <path fill="rgba(0,194,224,.06)" d="M0,80 C360,160 1080,0 1440,80 L1440,180 L0,180 Z" />
@@ -41,8 +43,11 @@ require_once __DIR__ . '/../app/Core/bootstrap.php';
         </svg>
     </div>
 
-    <!-- Floating particles (JS-generated) -->
-    <div id="particles" style="position:fixed;inset:0;pointer-events:none;z-index:1;"></div>
+    <!-- Aquatic fish scene (Canvas) -->
+    <canvas id="fishScene" aria-hidden="true"></canvas>
+
+    <!-- Floating bubbles (JS-generated) -->
+    <div id="particles" style="position:fixed;inset:0;pointer-events:none;z-index:2;"></div>
 
     <!-- ═══ LOGIN CARD ═══ -->
     <main class="login-wrapper" role="main" aria-label="Formulario de inicio de sesión">

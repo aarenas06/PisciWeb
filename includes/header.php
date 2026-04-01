@@ -61,7 +61,7 @@
     <nav class="pc-sidebar">
         <div class="navbar-wrapper">
             <div class="m-header">
-                <a href="../dashboard/index.html" class="b-brand text-primary">
+                <a href="Home" class="b-brand text-primary">
                     <img src="../public/assets/plantilla/images/Pisciweb/Logo_Lateral_banner.png"
                          class="img-fluid logo-lg sidebar-logo" alt="PisciWEB">
                 </a>
@@ -70,13 +70,13 @@
                 <ul class="pc-navbar">
                     <!-- ── Principal ── -->
                     <li class="pc-item">
-                        <a href="../dashboard/index.html" class="pc-link">
+                        <a href="Home" class="pc-link">
                             <span class="pc-micon"><i class="ti ti-dashboard"></i></span>
                             <span class="pc-mtext">Dashboard</span>
                         </a>
                     </li>
                     <li class="pc-item">
-                        <a href="../dashboard/index.html" class="pc-link">
+                        <a href="Reportes" class="pc-link">
                             <span class="pc-micon"><i class="ti ti-report-analytics"></i></span>
                             <span class="pc-mtext">Reportes</span>
                         </a>
@@ -88,7 +88,7 @@
                         <i class="ti ti-dashboard"></i>
                     </li>
                     <li class="pc-item">
-                        <a href="../elements/bc_typography.html" class="pc-link">
+                        <a href="Usuarios" class="pc-link">
                             <span class="pc-micon"><i class="ti ti-users"></i></span>
                             <span class="pc-mtext">Usuarios</span>
                         </a>

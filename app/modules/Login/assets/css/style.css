@@ -122,35 +122,29 @@ body {
     line-height: 0;
 }
 
-/* Floating fish particles */
+/* Floating bubbles */
 .particle {
     position: absolute;
-    width: 6px;
-    height: 6px;
     border-radius: 50%;
-    background: var(--cyan-light);
+    background: radial-gradient(circle at 30% 28%,
+        rgba(184, 240, 249, .5),
+        rgba(0, 194, 224, .14) 50%,
+        transparent 72%);
+    box-shadow:
+        inset 0 0 0 .5px rgba(0, 194, 224, .2),
+        0 0 4px rgba(0, 194, 224, .06);
     opacity: 0;
-    animation: floatUp 10s linear infinite;
+    animation: floatUp 12s linear infinite;
 }
 
 @keyframes floatUp {
-    0% {
-        opacity: 0;
-        transform: translateY(0) scale(.5);
-    }
-
-    10% {
-        opacity: .6;
-    }
-
-    90% {
-        opacity: .3;
-    }
-
-    100% {
-        opacity: 0;
-        transform: translateY(-80vh) scale(1.2);
-    }
+    0%   { opacity: 0; transform: translateY(0) translateX(0) scale(.6); }
+    8%   { opacity: .4; }
+    30%  { transform: translateY(-22vh) translateX(7px) scale(.8); }
+    55%  { transform: translateY(-45vh) translateX(-5px) scale(.92); }
+    80%  { transform: translateY(-66vh) translateX(4px) scale(1); }
+    92%  { opacity: .15; }
+    100% { opacity: 0; transform: translateY(-88vh) translateX(-2px) scale(1.08); }
 }
 
 /* ── CARD ─────────────────────────────────────────── */
@@ -669,4 +663,57 @@ body {
     .login-card {
         padding: 1.75rem 1.25rem;
     }
+}
+
+/* ── AQUATIC FISH CANVAS ──────────────────────────── */
+#fishScene {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+/* ── CAUSTIC LIGHT OVERLAY ────────────────────────── */
+.caustics {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: .4;
+    background:
+        radial-gradient(ellipse 600px 300px at 22% 40%, rgba(0, 194, 224, .045) 0%, transparent 70%),
+        radial-gradient(ellipse 500px 260px at 78% 22%, rgba(26, 127, 196, .04)  0%, transparent 70%),
+        radial-gradient(ellipse 420px 220px at 52% 78%, rgba(58, 198, 198, .035) 0%, transparent 70%);
+    animation: causticDrift 16s ease-in-out infinite alternate;
+}
+
+@keyframes causticDrift {
+    0%   { opacity: .3;  transform: scale(1)    translate(0, 0); }
+    33%  { opacity: .55; transform: scale(1.04) translate(14px, -10px); }
+    66%  { opacity: .35; transform: scale(.97)  translate(-10px, 8px); }
+    100% { opacity: .45; transform: scale(1.02) translate(6px, -4px); }
+}
+
+/* ── ANIMATED WAVES ───────────────────────────────── */
+.waves path:nth-child(1) { animation: waveShift  9s ease-in-out infinite alternate; }
+.waves path:nth-child(2) { animation: waveShift 12s ease-in-out infinite alternate-reverse; }
+.waves path:nth-child(3) { animation: waveShift  7s ease-in-out infinite alternate; }
+
+@keyframes waveShift {
+    from { transform: translateX(-18px); }
+    to   { transform: translateX(18px); }
+}
+
+/* ── ACCESSIBILITY: Reduced Motion ────────────────── */
+@media (prefers-reduced-motion: reduce) {
+    .orb,
+    .particle,
+    .caustics,
+    .waves path           { animation: none !important; }
+    #fishScene            { display: none; }
+    .login-wrapper,
+    .logo-area,
+    .field-group          { animation: none !important; }
+    .btn-login::after     { transition: none; }
 }

@@ -15,12 +15,18 @@ window.ModuleAPI = {
       document.querySelector('base')?.href ||
       `${window.location.origin}/`;
 
-    // Soporta subcarpetas: "GestCompetencia/Evaluaciones" => app/modules/GestCompetencia/Evaluaciones
+    // Soporta subcarpetas: "GestCompetencia/Evaluaciones" => /api/GestCompetencia/Evaluaciones
     const cleanModule = String(moduleName || '')
       .replace(/^\/+|\/+$/g, '')
       .replace(/\\/g, '/');
 
-    return `${base}app/modules/${cleanModule}/controller/${controllerName}.php`;
+    // Si el controller NO es el default, se agrega como sufijo :NombreController
+    // Ej: api('Migration', 'ControllerXML') → /api/Migration:ControllerXML
+    const suffix = controllerName && controllerName !== 'controller'
+      ? `:${controllerName}`
+      : '';
+
+    return `${base}api/${cleanModule}${suffix}`;
   },
 
   /**
